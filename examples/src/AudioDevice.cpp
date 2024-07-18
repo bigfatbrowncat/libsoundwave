@@ -30,7 +30,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <chrono>
 #include <iostream>
 
-static RingBufferT<float> buffer(BUFFER_LENGTH);
+static RingBufferT<float> buffer(BUFFER_LENGTH * BUFFER_OVERLAP_TIMES);
 static RingBufferT<float> record_buffer(BUFFER_LENGTH / 2);
 
 static int rt_callback(void *output_buffer, void *input_buffer, uint32_t num_bufferframes, double stream_time, RtAudioStreamStatus status, void * user_data)
@@ -38,8 +38,15 @@ static int rt_callback(void *output_buffer, void *input_buffer, uint32_t num_buf
 	if (status) std::cerr << "[rtaudio] buffer over or underflow" << std::endl;
 
 	// Playback
-	if (buffer.getAvailableRead()) buffer.read((float*)output_buffer, BUFFER_LENGTH);
-	else memset(output_buffer, 0, BUFFER_LENGTH * sizeof(float));
+	if (buffer.getAvailableRead()) {
+		if (buffer.getAvailableRead() < BUFFER_LENGTH * (BUFFER_OVERLAP_TIMES - 1)) {
+			std::cout << "Buffer is running low..." << std::endl;
+		}
+		buffer.read((float*)output_buffer, BUFFER_LENGTH);
+
+	} else {
+		memset(output_buffer, 0 , BUFFER_LENGTH * sizeof(float));
+	}
 
 	// Recording
 	if (record_buffer.getAvailableWrite()) record_buffer.write((float*)input_buffer, BUFFER_LENGTH / 2);
@@ -49,7 +56,7 @@ static int rt_callback(void *output_buffer, void *input_buffer, uint32_t num_buf
 
 AudioDevice::AudioDevice(int numChannels, int sampleRate, int deviceId)
 {
-	rtaudio = std::unique_ptr<RtAudio>(new RtAudio);
+	rtaudio = std::unique_ptr<RtAudio>(new RtAudio(RtAudio::WINDOWS_DS));
 	info.id = (deviceId != -1) ? deviceId : rtaudio->getDefaultOutputDevice();
 	info.numChannels = numChannels;
 	info.sampleRate = sampleRate;
@@ -92,21 +99,23 @@ bool AudioDevice::Open(const int deviceId)
 	return false;
 }
 
-void AudioDevice::ListAudioDevices()
+std::vector<unsigned int> AudioDevice::ListAudioDevices()
 {
-	std::unique_ptr<RtAudio> tempDevice(new RtAudio);
+	std::unique_ptr<RtAudio> tempDevice(new RtAudio(RtAudio::WINDOWS_DS));
 
 	RtAudio::DeviceInfo info;
 	uint32_t devices = tempDevice->getDeviceCount();
 
 	std::cout << "[rtaudio] Found: " << devices << " device(s)\n";
 
+	auto devIds = tempDevice->getDeviceIds();
 	for (uint32_t i = 0; i < devices; ++i)
 	{
-		info = tempDevice->getDeviceInfo(i);
-		std::cout << "\tDevice: " << i << " - " << info.name << std::endl;
+		info = tempDevice->getDeviceInfo(devIds[i]);
+		std::cout << "\tDevice " << devIds[i] << ": " << info.name << std::endl;
 	}
 	std::cout << std::endl;
+	return devIds;
 }
 
 bool AudioDevice::Play(const std::vector<float>& data)
@@ -122,6 +131,8 @@ bool AudioDevice::Play(const std::vector<float>& data)
 	{
 		bool status = buffer.write((data.data() + (writeCount * BUFFER_LENGTH)), BUFFER_LENGTH);
 		if (status) writeCount++;
+		//rtaudio->tickStreamTime();
+		Sleep(1);
 	}
 
 	return true;

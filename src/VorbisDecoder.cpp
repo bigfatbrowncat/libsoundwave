@@ -24,7 +24,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "VorbisDecoder.h"
-#include "libvorbis/include/vorbis/vorbisfile.h"
+#include "vorbis/vorbisfile.h"
 
 using namespace soundwave;
 

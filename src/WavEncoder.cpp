@@ -206,7 +206,7 @@ int WavEncoder::WriteFile(const EncoderParams p, const AudioData* d, const std::
 //   Opus File Encoding   //
 ////////////////////////////
 
-#include "opus/opusfile/include/opusfile.h"
+#include "opusfile.h"
 #include "ogg/ogg.h"
 
 typedef std::pair<std::string, std::string> metadata_t;

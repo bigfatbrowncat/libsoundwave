@@ -29,8 +29,8 @@ using namespace soundwave;
 
 #include "mpc/mpcdec.h"
 #include "mpc/reader.h"
-#include "musepack/libmpcdec/decoder.h"
-#include "musepack/libmpcdec/internal.h"
+#include "libmpcdec/decoder.h"
+#include "libmpcdec/internal.h"
 
 class MusepackInternal
 {

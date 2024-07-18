@@ -26,6 +26,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef LIBSOUNDWAVE_COMMON_H
 #define LIBSOUNDWAVE_COMMON_H
 
+#include <float.h>
+
 #include <memory>
 #include <vector>
 #include <algorithm>

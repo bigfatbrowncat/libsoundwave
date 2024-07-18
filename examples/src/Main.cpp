@@ -12,17 +12,24 @@
 #include "libsoundwave/WavEncoder.h"
 #include "libsoundwave/PostProcess.h"
 
+#include <iostream>
+#include "RtAudio.h"
+
 #include <thread>
 
 using namespace soundwave;
 
 int main(int argc, const char **argv) try
 {
-	AudioDevice::ListAudioDevices();
+	auto devices = AudioDevice::ListAudioDevices();
 
 	int desiredSampleRate = 44100;
-	AudioDevice myDevice(2, desiredSampleRate);
-	myDevice.Open(myDevice.info.id);
+	AudioDevice myDevice(2, desiredSampleRate, -1);
+	auto res = myDevice.Open(-1 /*myDevice.info.id*/);
+	if (!res) {
+		std::cerr << "Can't open the device" << std::endl;
+		return 1;
+	}
 
 	std::shared_ptr<AudioData> fileData = std::make_shared<AudioData>();
 
@@ -31,7 +38,11 @@ int main(int argc, const char **argv) try
 	if (argc > 1)
 	{
 		std::string cli_arg = std::string(argv[1]);
-		loader.Load(fileData.get(), cli_arg);
+		//loader.Load(fileData.get(), cli_arg);
+
+		auto memory = ReadFile(cli_arg);
+		loader.Load(fileData.get(), "flac", memory.buffer);
+
 	}
 	else
 	{
@@ -112,7 +123,7 @@ int main(int argc, const char **argv) try
 	// Resample
 	std::vector<float> outputBuffer;
 	outputBuffer.reserve(fileData->samples.size());
-	linear_resample(44100.0 / 48000.0, fileData->samples, outputBuffer, (uint32_t)fileData->samples.size());
+	linear_resample(/*44100.0*/ (float)desiredSampleRate / fileData->sampleRate /*48000.0*/, fileData->samples, outputBuffer, (uint32_t)fileData->samples.size());
 
 	std::cout << "Input Samples: " << fileData->samples.size() << std::endl;
 	std::cout << "Output Samples: " << outputBuffer.size() << std::endl;

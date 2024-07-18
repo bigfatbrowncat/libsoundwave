@@ -29,11 +29,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define AUDIO_DEVICE_H
 
 #include "RingBuffer.h"
-#include "rtaudio/RtAudio.h"
+#include "RtAudio.h"
 #include <vector>
 #include <memory>
 
-static const uint32_t FRAME_SIZE = 512;
+static const uint8_t BUFFER_OVERLAP_TIMES = 2;
+static const uint32_t FRAME_SIZE = 2048;
 static const int32_t CHANNELS = 2;
 static const int32_t BUFFER_LENGTH = FRAME_SIZE * CHANNELS;
 
@@ -60,7 +61,7 @@ public:
 	AudioDeviceInfo info;
 	AudioDevice(int numChannels, int sampleRate, int deviceId = -1);
 	~AudioDevice();
-	static void ListAudioDevices();
+	static std::vector<unsigned int> ListAudioDevices();
 	bool Open(const int deviceId);
 	bool Play(const std::vector<float> &data);
 	bool Record(const uint32_t lengthInSamples, std::vector<float> & recordingBuffer);

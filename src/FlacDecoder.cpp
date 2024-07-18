@@ -45,7 +45,8 @@ public:
 		FLAC__stream_decoder_set_metadata_respond(decoderInternal, FLAC__METADATA_TYPE_STREAMINFO);
 
 		//@todo: check if OGG flac
-		bool initialized = FLAC__stream_decoder_init_file(decoderInternal,
+		bool initialized = FLAC__stream_decoder_init_file(
+			decoderInternal,
 			filePath.c_str(),
 			s_writeCallback,
 			s_metadataCallback,
@@ -60,7 +61,7 @@ public:
 			FLAC__stream_decoder_process_until_end_of_metadata(decoderInternal);
 
 			// Read memory out into our temporary internalBuffer
-			FLAC__stream_decoder_process_until_end_of_metadata(decoderInternal);
+			FLAC__stream_decoder_process_until_end_of_stream(decoderInternal);
 
 			// Presently unneeded, but useful for reference
 			//FLAC__ChannelAssignment channelAssignment = FLAC__stream_decoder_get_channel_assignment(decoderInternal);
@@ -182,7 +183,14 @@ public:
 
 		if (readLength > 0)
 		{
-			std::memcpy(buffer, decoderInternal->data.data(), readLength);
+			std::memcpy(buffer, &(decoderInternal->data.data()[decoderInternal->dataPos]), readLength);
+			//checksum
+			uint64_t cs = 0;
+			for (size_t i = 0; i < readLength; i++) {
+				cs += buffer[i];
+			}
+			std::cout << cs << std::endl;
+
 			decoderInternal->dataPos += readLength;
 			*bytes = readLength;
 			if (decoderInternal->dataPos < decoderInternal->data.size()) return FLAC__STREAM_DECODER_READ_STATUS_CONTINUE;

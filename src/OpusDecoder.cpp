@@ -24,7 +24,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "OpusDecoder.h"
-#include "opus/opusfile/include/opusfile.h"
+#include "opusfile.h"
 
 using namespace soundwave;
 
