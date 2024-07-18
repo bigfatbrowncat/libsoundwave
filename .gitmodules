@@ -1,0 +1,24 @@
+[submodule "third_party/flac"]
+	path = third_party/flac
+	url = https://github.com/xiph/flac.git
+[submodule "third_party/ogg"]
+	path = third_party/ogg
+	url = https://github.com/xiph/ogg.git
+[submodule "third_party/opus"]
+	path = third_party/opus
+	url = https://github.com/xiph/opus.git
+[submodule "third_party/opusfile"]
+	path = third_party/opusfile
+	url = https://github.com/xiph/opusfile.git
+[submodule "third_party/vorbis"]
+	path = third_party/vorbis
+	url = https://github.com/xiph/vorbis.git
+[submodule "third_party/rtaudio"]
+	path = third_party/rtaudio
+	url = https://github.com/thestk/rtaudio.git
+[submodule "third_party/WavPack"]
+	path = third_party/WavPack
+	url = https://github.com/dbry/WavPack.git
+[submodule "third_party/libmodplug"]
+	path = third_party/libmodplug
+	url = https://github.com/Konstanty/libmodplug.git
