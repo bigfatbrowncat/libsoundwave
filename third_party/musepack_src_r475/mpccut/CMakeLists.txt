@@ -6,11 +6,12 @@ include_directories(${libmpc_SOURCE_DIR}/libmpcenc)
 link_directories(${libmpc_BINARY_DIR}/libmpcenc)
 
 if(MSVC)
-include_directories(${libmpc_SOURCE_DIR}/win32)
-add_executable(mpccut mpccut ${libmpc_SOURCE_DIR}/win32/attgetopt)
+  include_directories(${libmpc_SOURCE_DIR}/win32)
+  add_executable(mpccut mpccut.c ${libmpc_SOURCE_DIR}/win32/attgetopt.c)
+else()
+  add_executable(mpccut mpccut.c)
 endif(MSVC)
 
-add_executable(mpccut mpccut.c)
 
 if(SHARED)
   target_link_libraries(mpccut mpcdec)

@@ -6,11 +6,12 @@ include_directories(${libmpc_SOURCE_DIR}/libmpcenc)
 link_directories(${libmpc_BINARY_DIR}/libmpcenc)
 
 if(MSVC)
-include_directories(${libmpc_SOURCE_DIR}/win32)
-add_executable(mpc2sv8 mpc2sv8.c ${libmpc_SOURCE_DIR}/win32/attgetopt.c ${libmpc_SOURCE_DIR}/win32/basename.c ${libmpc_SOURCE_DIR}/win32/dirent.c)
+  include_directories(${libmpc_SOURCE_DIR}/win32)
+  add_executable(mpc2sv8 mpc2sv8.c ${libmpc_SOURCE_DIR}/win32/attgetopt.c ${libmpc_SOURCE_DIR}/win32/basename.c ${libmpc_SOURCE_DIR}/win32/dirent.c)
+else()
+  add_executable(mpc2sv8 mpc2sv8.c)
 endif(MSVC)
 
-add_executable(mpc2sv8 mpc2sv8.c)
 
 if(SHARED)
   target_link_libraries(mpc2sv8 mpcdec)

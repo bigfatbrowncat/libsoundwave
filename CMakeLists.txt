@@ -20,6 +20,7 @@ add_subdirectory(third_party/WavPack)
 set(RTAUDIO_BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
 set(RTAUDIO_BUILD_STATIC_LIBS OFF CACHE BOOL "" FORCE)
 set(RTAUDIO_API_DS ON CACHE BOOL "" FORCE)
+set(RTAUDIO_TARGETNAME_UNINSTALL "rtaudio_uninstall" CACHE STRING "" FORCE)
 add_subdirectory(third_party/rtaudio)
 
 add_subdirectory(third_party/libcuefile_r475)
