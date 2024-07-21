@@ -12,6 +12,7 @@ add_subdirectory(third_party/flac)
 add_subdirectory(third_party/opus)
 
 set(OP_DISABLE_HTTP ON CACHE BOOL "" FORCE)     # because we don't want to depend on OpenSSL
+set(OP_DISABLE_EXAMPLES ON CACHE BOOL "" FORCE)     # because examples need opusurl that needs http
 set(OP_DISABLE_DOCS ON CACHE BOOL "" FORCE)     # because we don't want to depend on Doxygen
 add_subdirectory(third_party/opusfile)
 
@@ -32,7 +33,21 @@ set(CUEFILE_LIBRARY cuefile-static)
 set(REPLAY_GAIN_LIBRARY replaygain-static)
 add_subdirectory(third_party/musepack_src_r475)
 
+# modplug doesn't support unicode in some places. It's too old-school :)
+remove_definitions(-DUNICODE)
+remove_definitions(-D_UNICODE)
 add_subdirectory(third_party/libmodplug)
+add_definitions(-DDUNICODE)
+add_definitions(-D_UNICODE)
+
+#get_target_property(modplug_defs modplug COMPILE_DEFINITIONS)
+#list(FILTER modplug_defs EXCLUDE REGEX [[^-DUNICODE$]])
+#list(FILTER modplug_defs EXCLUDE REGEX [[^-D_UNICODE$]])
+#set_property(TARGET modplug PROPERTY COMPILE_DEFINITIONS ${defs})
+
+#target_compile_definitions(modplug PRIVATE -UUNICODE)
+#target_compile_definitions(modplug PRIVATE -U_UNICODE)
+
 
 add_library(libsoundwave STATIC
         include/libsoundwave/AudioDecoder.h

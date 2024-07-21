@@ -187,7 +187,7 @@ Ruhehoerschwelle ( PsyModel* m,
     }
 }
 
-#ifdef _MSC_VER
+#if defined(_MSC_VER) && 0		// It is not needed anymore
 static double
 asinh ( double x )
 {
