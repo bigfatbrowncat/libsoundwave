@@ -43,7 +43,7 @@ public:
 		ModPlug_GetSettings(&mps);
 		mps.mChannels = 2;
 		mps.mBits = 32;
-		mps.mFrequency - 44100;
+		mps.mFrequency = 44100;
 		mps.mResamplingMode = MODPLUG_RESAMPLE_FIR; // _LINEAR, _SPLINE
 		mps.mStereoSeparation = 128;
 		mps.mMaxMixChannels = 64;

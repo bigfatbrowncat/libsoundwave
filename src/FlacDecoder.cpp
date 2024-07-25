@@ -184,12 +184,6 @@ public:
 		if (readLength > 0)
 		{
 			std::memcpy(buffer, &(decoderInternal->data.data()[decoderInternal->dataPos]), readLength);
-			//checksum
-			uint64_t cs = 0;
-			for (size_t i = 0; i < readLength; i++) {
-				cs += buffer[i];
-			}
-			std::cout << cs << std::endl;
 
 			decoderInternal->dataPos += readLength;
 			*bytes = readLength;
